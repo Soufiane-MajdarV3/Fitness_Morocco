@@ -4,7 +4,7 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
             <!-- About -->
             <div>
-                <h3 class="text-xl font-bold mb-4">منصة فيتنس المغرب</h3>
+                <h3 class="text-xl font-bold mb-4">FITMO</h3>
                 <p class="text-gray-400">
                     منصة متخصصة في ربط المدربين الشخصيين والنوادي الرياضية مع العملاء في المغرب.
                 </p>
@@ -14,21 +14,22 @@
             <div>
                 <h4 class="text-lg font-bold mb-4">روابط سريعة</h4>
                 <ul class="space-y-2 text-gray-400">
-                    <li><a href="{% url 'home' %}" class="hover:text-white">الرئيسية</a></li>
-                    <li><a href="{% url 'trainers' %}" class="hover:text-white">المدربون</a></li>
+                    <li><a href="{% url 'home' %}" class="hover:text-white transition-colors"><i class="fas fa-home ml-2"></i>الرئيسية</a></li>
+                    <li><a href="{% url 'trainers' %}" class="hover:text-white transition-colors"><i class="fas fa-users ml-2"></i>المدربون</a></li>
+                    <li><a href="{% url 'contact' %}" class="hover:text-white transition-colors"><i class="fas fa-envelope ml-2"></i>اتصل بنا</a></li>
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'client_dashboard' %}" class="hover:text-white">لوحة التحكم</a></li>
+                        <li><a href="{% url 'client_dashboard' %}" class="hover:text-white transition-colors"><i class="fas fa-chart-line ml-2"></i>لوحة التحكم</a></li>
                     {% endif %}
                 </ul>
             </div>
             
-            <!-- Contact -->
+            <!-- Legal -->
             <div>
-                <h4 class="text-lg font-bold mb-4">اتصل بنا</h4>
+                <h4 class="text-lg font-bold mb-4">قانوني</h4>
                 <ul class="space-y-2 text-gray-400">
-                    <li><i class="fas fa-phone ml-2"></i>+212 123 456 789</li>
-                    <li><i class="fas fa-envelope ml-2"></i>info@fitnesmorocco.com</li>
-                    <li><i class="fas fa-map-marker-alt ml-2"></i>الدار البيضاء، المغرب</li>
+                    <li><a href="{% url 'terms' %}" class="hover:text-white transition-colors"><i class="fas fa-file-contract ml-2"></i>شروط الخدمة</a></li>
+                    <li><a href="{% url 'privacy' %}" class="hover:text-white transition-colors"><i class="fas fa-lock ml-2"></i>سياسة الخصوصية</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors"><i class="fas fa-undo ml-2"></i>سياسة الاسترجاع</a></li>
                 </ul>
             </div>
             
@@ -36,17 +37,20 @@
             <div>
                 <h4 class="text-lg font-bold mb-4">تابعنا</h4>
                 <div class="flex space-x-reverse space-x-4">
-                    <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-indigo-500 text-2xl transition-colors" title="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-indigo-500 text-2xl transition-colors" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-indigo-500 text-2xl transition-colors" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-indigo-500 text-2xl transition-colors" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
                 </div>
             </div>
         </div>
         
         <div class="border-t border-gray-800 mt-8 pt-8 text-center">
             <p class="text-gray-400">
-                © 2024 منصة فيتنس المغرب. جميع الحقوق محفوظة.
+                © 2024 FITMO - منصة التدريب الرياضي. جميع الحقوق محفوظة.
+            </p>
+            <p class="text-gray-500 text-sm mt-2">
+                آخر تحديث: {{ now|date:"M d, Y" }}
             </p>
         </div>
     </div>

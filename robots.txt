@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /login/
+Disallow: /signup/
+Disallow: /dashboard/
+Disallow: /trainer-dashboard/
+Disallow: /profile/
+
+Sitemap: /sitemap.xml
+
+# Performance
+Crawl-delay: 1
+Request-rate: 10/1m
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /

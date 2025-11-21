@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}شروط الخدمة - FITMO{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="container mx-auto px-4 max-w-3xl">
+        <!-- Header -->
+        <div class="mb-12 text-center">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">شروط الخدمة</h1>
+            <p class="text-gray-600">آخر تحديث: {{ now|date:"d F Y" }}</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-8 space-y-8">
+            <!-- Introduction -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-info-circle ml-2 text-indigo-600"></i>
+                    مقدمة
+                </h2>
+                <p class="text-gray-700 leading-relaxed">
+                    منصة FITMO ("المنصة") توفر خدمات التدريب الرياضي عبر الإنترنت. بالوصول إلى المنصة أو استخدامها، فأنت توافق على هذه الشروط والأحكام بالكامل. إذا كنت لا توافق على أي جزء من هذه الشروط، يرجى عدم استخدام المنصة.
+                </p>
+            </section>
+
+            <!-- User Accounts -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-user ml-2 text-indigo-600"></i>
+                    حسابات المستخدمين
+                </h2>
+                <ul class="space-y-3 text-gray-700">
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>أنت مسؤول عن الحفاظ على سرية كلمة المرور الخاصة بك</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>يجب أن يكون عمرك 18 سنة على الأقل لاستخدام المنصة</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>أنت توافق على تقديم معلومات دقيقة وكاملة</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>أنت مسؤول عن جميع الأنشطة على حسابك</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Booking & Payments -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-calendar-check ml-2 text-indigo-600"></i>
+                    الحجوزات والدفع
+                </h2>
+                <ul class="space-y-3 text-gray-700">
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>جميع الأسعار بالدرهم المغربي وتشمل الضريبة</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>يمكنك إلغاء الحجز قبل 24 ساعة من موعد الجلسة</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>الدفع يتم عبر بوابات دفع آمنة وموثوقة</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>في حالة عدم الحضور، لن تتم استرجاع الأموال</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Trainer Guidelines -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-dumbbell ml-2 text-indigo-600"></i>
+                    معايير المدربين
+                </h2>
+                <ul class="space-y-3 text-gray-700">
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>يجب التحقق من هوية المدرب وخبرته قبل الموافقة</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>المدربون يجب أن يالتزموا بآداب السلوك المهني</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>أي انتهاك سيؤدي إلى حذف الحساب بدون استرجاع الأموال</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>المدربون مسؤولون عن سلامة العملاء أثناء الجلسات</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Liability -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-shield-alt ml-2 text-indigo-600"></i>
+                    المسؤولية
+                </h2>
+                <p class="text-gray-700 leading-relaxed mb-4">
+                    FITMO توفر المنصة "كما هي" ولا تضمن النتائج. نحن لا نتحمل مسؤولية:
+                </p>
+                <ul class="space-y-3 text-gray-700">
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>الإصابات أو الأذى الجسدي الناتج عن التدريب</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>عدم الالتزام بالبيانات أو الخوادم</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-indigo-600 font-bold">•</span>
+                        <span>الأضرار غير المباشرة أو العرضية</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Changes to Terms -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-edit ml-2 text-indigo-600"></i>
+                    تعديل الشروط
+                </h2>
+                <p class="text-gray-700 leading-relaxed">
+                    نحتفظ بالحق في تعديل هذه الشروط في أي وقت. سيتم إخطارك بأي تغييرات جوهرية عبر البريد الإلكتروني أو إشعار على المنصة.
+                </p>
+            </section>
+
+            <!-- Contact -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-envelope ml-2 text-indigo-600"></i>
+                    التواصل
+                </h2>
+                <p class="text-gray-700 leading-relaxed">
+                    إذا كان لديك أسئلة حول هذه الشروط، يرجى التواصل معنا على:
+                    <a href="mailto:info@fitmo.ma" class="text-indigo-600 hover:text-indigo-700 font-semibold">info@fitmo.ma</a>
+                </p>
+            </section>
+        </div>
+
+        <!-- Navigation -->
+        <div class="mt-12 flex justify-center gap-4">
+            <a href="{% url 'contact' %}" class="text-indigo-600 hover:text-indigo-700 font-semibold flex items-center gap-2">
+                <i class="fas fa-arrow-right"></i>
+                العودة للتواصل
+            </a>
+            <a href="{% url 'home' %}" class="text-indigo-600 hover:text-indigo-700 font-semibold flex items-center gap-2">
+                <i class="fas fa-home"></i>
+                الرئيسية
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

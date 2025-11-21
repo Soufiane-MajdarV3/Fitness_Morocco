@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 # Core views
 from core.views import HomeView, TrainerListView, TrainerDetailView, contact_view, client_progress
@@ -35,6 +36,10 @@ urlpatterns = [
     path('trainers/', TrainerListView.as_view(), name='trainers'),
     path('trainer/<int:trainer_id>/', TrainerDetailView.as_view(), name='trainer_detail'),
     path('contact/', contact_view, name='contact'),
+    
+    # Legal Pages
+    path('terms/', TemplateView.as_view(template_name='terms_of_service.html'), name='terms'),
+    path('privacy/', TemplateView.as_view(template_name='privacy_policy.html'), name='privacy'),
     
     # Authentication URLs
     path('signup/', RegisterView.as_view(), name='signup'),
