@@ -4,7 +4,16 @@ from pathlib import Path
 
 # Add project to path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fitness_morocco.settings')
+
+# Set production environment for Vercel
+os.environ.setdefault('ENVIRONMENT', 'production')
+os.environ.setdefault('DEBUG', 'False')
+
+# Use Vercel settings if in production
+if os.environ.get('ENVIRONMENT') == 'production':
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fitness_morocco.settings_vercel')
+else:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fitness_morocco.settings')
 
 import django
 django.setup()
@@ -16,5 +25,9 @@ from whitenoise import WhiteNoise
 application = get_wsgi_application()
 
 # Wrap with WhiteNoise for static file serving
-if not settings.DEBUG:
-    application = WhiteNoise(application, root=settings.STATIC_ROOT)
+staticfiles_dir = getattr(settings, 'STATIC_ROOT', None)
+if staticfiles_dir and os.path.exists(staticfiles_dir):
+    application = WhiteNoise(application, root=staticfiles_dir)
+
+# Export app variable for Vercel
+app = application
