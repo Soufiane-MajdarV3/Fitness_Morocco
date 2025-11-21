@@ -2,6 +2,13 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+# PyMySQL as MySQLdb substitute
+try:
+    import pymysql
+    pymysql.install_as_MySQLdb()
+except ImportError:
+    pass
+
 # Load environment variables
 load_dotenv()
 
