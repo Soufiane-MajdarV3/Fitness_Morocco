@@ -1,16 +1,22 @@
 {
-  "buildCommand": "pip install -r requirements.txt --no-cache-dir && python manage.py migrate 2>/dev/null || true",
-  "outputDirectory": ".",
-  "publicPath": "/",
-  "env": {
-    "PYTHON_VERSION": "3.11"
-  },
-  "functions": {
-    "api/index.py": {
-      "memory": 1024,
-      "maxDuration": 30
+  "version": 2,
+  "builds": [
+    {
+      "src": "fitness_morocco/wsgi.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.11"
+      }
+    },
+    {
+      "src": "build.sh",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "staticfiles"
+      }
     }
-  },
+  ],
   "routes": [
     {
       "src": "/static/(.*)",
@@ -28,12 +34,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/api/index.py"
+      "dest": "fitness_morocco/wsgi.py"
     }
-  ],
-  "git": {
-    "deploymentEnabled": {
-      "main": true
-    }
-  }
+  ]
 }

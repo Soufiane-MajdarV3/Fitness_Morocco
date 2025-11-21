@@ -19,3 +19,6 @@ else:
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fitness_morocco.settings')
 
 application = get_wsgi_application()
+
+# Expose app variable for Vercel
+app = application
