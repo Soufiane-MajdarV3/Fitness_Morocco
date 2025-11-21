@@ -92,8 +92,6 @@ DATABASES = {
         'OPTIONS': {
             'charset': 'utf8mb4',
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'connection_pooling': True,
-            'max_pool_size': 5,
         },
         'CONN_MAX_AGE': 300,  # Reduced for serverless
         'AUTOCOMMIT': True,
