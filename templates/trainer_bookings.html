@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}إدارة الحجوزات - FITMO{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">
+            <i class="fas fa-calendar ml-2 text-indigo-600"></i>
+            إدارة الحجوزات
+        </h1>
+
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-8 overflow-x-auto bg-white rounded-xl shadow-lg p-4">
+            <a href="{% url 'trainer_bookings' %}?status=all" class="px-6 py-2 rounded-lg font-semibold transition-colors {% if status_filter == 'all' %}bg-indigo-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+                <i class="fas fa-inbox ml-2"></i>الكل ({{ pending_count|add:confirmed_count|add:completed_count|add:cancelled_count }})
+            </a>
+            <a href="{% url 'trainer_bookings' %}?status=pending" class="px-6 py-2 rounded-lg font-semibold transition-colors {% if status_filter == 'pending' %}bg-yellow-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+                <i class="fas fa-clock ml-2"></i>قيد الانتظار ({{ pending_count }})
+            </a>
+            <a href="{% url 'trainer_bookings' %}?status=confirmed" class="px-6 py-2 rounded-lg font-semibold transition-colors {% if status_filter == 'confirmed' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+                <i class="fas fa-check-circle ml-2"></i>مؤكدة ({{ confirmed_count }})
+            </a>
+            <a href="{% url 'trainer_bookings' %}?status=completed" class="px-6 py-2 rounded-lg font-semibold transition-colors {% if status_filter == 'completed' %}bg-green-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+                <i class="fas fa-check-double ml-2"></i>مكتملة ({{ completed_count }})
+            </a>
+            <a href="{% url 'trainer_bookings' %}?status=cancelled" class="px-6 py-2 rounded-lg font-semibold transition-colors {% if status_filter == 'cancelled' %}bg-red-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+                <i class="fas fa-times-circle ml-2"></i>ملغاة ({{ cancelled_count }})
+            </a>
+        </div>
+
+        <!-- Bookings List -->
+        {% if bookings %}
+            <div class="space-y-4">
+                {% for booking in bookings %}
+                    <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
+                            <!-- Client -->
+                            <div>
+                                <p class="text-sm text-gray-600">العميل</p>
+                                <p class="font-semibold text-gray-900">{{ booking.client.get_full_name }}</p>
+                                <p class="text-sm text-gray-600">{{ booking.client.email }}</p>
+                            </div>
+
+                            <!-- Date & Time -->
+                            <div>
+                                <p class="text-sm text-gray-600">التاريخ والوقت</p>
+                                <p class="font-semibold text-gray-900">{{ booking.booking_date|date:"d/m/Y" }}</p>
+                                <p class="text-sm text-gray-600">{{ booking.start_time|time:"H:i" }}</p>
+                            </div>
+
+                            <!-- Duration -->
+                            <div>
+                                <p class="text-sm text-gray-600">المدة</p>
+                                <p class="font-semibold text-gray-900">{{ booking.duration_minutes }} دقيقة</p>
+                                <p class="text-sm text-indigo-600">{{ booking.total_price }} د.م</p>
+                            </div>
+
+                            <!-- Status -->
+                            <div>
+                                <p class="text-sm text-gray-600">الحالة</p>
+                                <span class="inline-block px-3 py-1 rounded-full text-sm font-semibold
+                                    {% if booking.status == 'pending' %}bg-yellow-100 text-yellow-800
+                                    {% elif booking.status == 'confirmed' %}bg-blue-100 text-blue-800
+                                    {% elif booking.status == 'completed' %}bg-green-100 text-green-800
+                                    {% elif booking.status == 'cancelled' %}bg-red-100 text-red-800
+                                    {% endif %}
+                                ">
+                                    {% if booking.status == 'pending' %}قيد الانتظار
+                                    {% elif booking.status == 'confirmed' %}مؤكدة
+                                    {% elif booking.status == 'completed' %}مكتملة
+                                    {% elif booking.status == 'cancelled' %}ملغاة
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="text-right">
+                                {% if booking.status != 'cancelled' and booking.status != 'completed' %}
+                                    <form method="POST" action="{% url 'update_booking_status' booking.id %}" class="inline">
+                                        {% csrf_token %}
+                                        <select name="status" onchange="this.form.submit()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                            <option value="">تغيير الحالة</option>
+                                            {% if booking.status != 'confirmed' %}
+                                                <option value="confirmed">تأكيد</option>
+                                            {% endif %}
+                                            <option value="completed">إكمال</option>
+                                            <option value="cancelled">إلغاء</option>
+                                        </select>
+                                    </form>
+                                {% else %}
+                                    <button disabled class="text-gray-500 text-sm">لا توجد إجراءات</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-white rounded-xl shadow-lg p-12 text-center max-w-md mx-auto">
+                <i class="fas fa-inbox text-6xl text-gray-300 mb-6"></i>
+                <h2 class="text-2xl font-bold text-gray-900 mb-3">لا توجد حجوزات</h2>
+                <p class="text-gray-600">لا توجد حجوزات بحالة "{{ status_filter }}"</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,5 +1,5 @@
 """
-URL configuration for fitness_morocco project.
+URL configuration for FITMO (Fitness Morocco) project.
 """
 from django.contrib import admin
 from django.urls import path, include
@@ -7,7 +7,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 # Core views
-from core.views import HomeView, TrainerListView, TrainerDetailView
+from core.views import HomeView, TrainerListView, TrainerDetailView, contact_view, client_progress
 
 # Authentication views
 from authentication.views import RegisterView, login_view, logout_view, profile_view, profile_update_view
@@ -21,6 +21,12 @@ from bookings.views import (
 # Dashboard views
 from dashboard.views import client_dashboard_view, trainer_dashboard_view
 
+# Trainer views
+from trainers.views import (
+    trainer_edit_profile, trainer_availability, delete_availability,
+    trainer_my_clients, trainer_earnings, trainer_bookings, update_booking_status
+)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     
@@ -28,6 +34,7 @@ urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('trainers/', TrainerListView.as_view(), name='trainers'),
     path('trainer/<int:trainer_id>/', TrainerDetailView.as_view(), name='trainer_detail'),
+    path('contact/', contact_view, name='contact'),
     
     # Authentication URLs
     path('signup/', RegisterView.as_view(), name='signup'),
@@ -46,6 +53,16 @@ urlpatterns = [
     # Dashboard URLs
     path('dashboard/', client_dashboard_view, name='client_dashboard'),
     path('trainer-dashboard/', trainer_dashboard_view, name='trainer_dashboard'),
+    path('progress/', client_progress, name='client_progress'),
+    
+    # Trainer URLs
+    path('trainer/edit-profile/', trainer_edit_profile, name='trainer_edit_profile'),
+    path('trainer/availability/', trainer_availability, name='trainer_availability'),
+    path('trainer/availability/<int:availability_id>/delete/', delete_availability, name='delete_availability'),
+    path('trainer/my-clients/', trainer_my_clients, name='trainer_my_clients'),
+    path('trainer/earnings/', trainer_earnings, name='trainer_earnings'),
+    path('trainer/bookings/', trainer_bookings, name='trainer_bookings'),
+    path('trainer/booking/<int:booking_id>/status/', update_booking_status, name='update_booking_status'),
 ]
 
 # Serve media files in development
