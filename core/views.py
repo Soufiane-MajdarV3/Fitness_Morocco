@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, ListView
 from django.contrib.auth.decorators import login_required
-from trainers.models import City, SessionType, Trainer
+from trainers.models import City, SessionType, Trainer, SubscriptionPlan
 from .models import ContactMessage
 from clients.models import ClientProgress, ClientProfile
 from django.contrib import messages
@@ -29,38 +29,38 @@ class TrainerListView(ListView):
     def get_queryset(self):
         queryset = Trainer.objects.filter(is_approved=True).order_by('-rating')
         
-        # Filter by city
+        # Filter by city (by name or code)
         city = self.request.GET.get('city')
         if city:
-            queryset = queryset.filter(user__city=city)
+            queryset = queryset.filter(user__city__icontains=city)
         
         # Filter by specialty
         specialty = self.request.GET.get('specialty')
         if specialty:
-            queryset = queryset.filter(specialties__id=specialty)
+            queryset = queryset.filter(specialties__id=specialty).distinct()
         
         # Filter by price range
         min_price = self.request.GET.get('min_price')
         max_price = self.request.GET.get('max_price')
         
         if min_price:
-            queryset = queryset.filter(price_per_hour__gte=min_price)
+            try:
+                queryset = queryset.filter(price_per_hour__gte=float(min_price))
+            except (ValueError, TypeError):
+                pass
+                
         if max_price:
-            queryset = queryset.filter(price_per_hour__lte=max_price)
-        
-        # Filter by experience
-        experience = self.request.GET.get('experience')
-        if experience:
-            queryset = queryset.filter(experience_years__gte=experience)
-        
-        # Filter by rating
-        rating = self.request.GET.get('rating')
-        if rating:
-            queryset = queryset.filter(rating__gte=rating)
+            try:
+                queryset = queryset.filter(price_per_hour__lte=float(max_price))
+            except (ValueError, TypeError):
+                pass
         
         # Sort
         sort_by = self.request.GET.get('sort', '-rating')
-        queryset = queryset.order_by(sort_by)
+        if sort_by in ['-rating', 'price_per_hour', '-price_per_hour', '-experience_years']:
+            queryset = queryset.order_by(sort_by)
+        else:
+            queryset = queryset.order_by('-rating')
         
         return queryset
     

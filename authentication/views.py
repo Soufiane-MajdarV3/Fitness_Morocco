@@ -14,12 +14,19 @@ class RegisterView(CreateView):
     template_name = 'registration/signup.html'
     success_url = reverse_lazy('login')
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from trainers.models import City
+        context['cities'] = City.objects.all()
+        return context
+    
     def form_valid(self, form):
         response = super().form_valid(form)
         user = form.instance
         
         # Create client profile if registering as client
         if user.user_type == 'client':
+            from clients.models import ClientProfile
             ClientProfile.objects.create(user=user)
         
         return response
