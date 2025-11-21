@@ -121,14 +121,26 @@ USE_TZ = True
 # Optimized Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
+# Only include directories that exist to avoid warnings on Vercel
+try:
+    static_dir = BASE_DIR / 'static'
+    STATICFILES_DIRS = [static_dir] if static_dir.exists() and static_dir.is_dir() else []
+except Exception:
+    STATICFILES_DIRS = []
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Disable remote static files collection
-STATICFILES_FINDERS = [
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-]
+# Only use FileSystemFinder if directories exist, otherwise just use AppDirectoriesFinder
+if STATICFILES_DIRS:
+    STATICFILES_FINDERS = [
+        'django.contrib.staticfiles.finders.FileSystemFinder',
+        'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    ]
+else:
+    # On Vercel, just use app directories
+    STATICFILES_FINDERS = [
+        'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    ]
 
 # Media files
 MEDIA_URL = '/media/'
