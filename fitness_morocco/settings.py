@@ -37,6 +37,8 @@ ALLOWED_HOSTS = [
     ".vercel.app",
     "localhost",
     "127.0.0.1",
+    "*.vercel.app",
+    "fitness-morocco.vercel.app",
 ]
 
 
@@ -215,28 +217,13 @@ AUTH_PASSWORD_VALIDATORS = [
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
-        },
-    },
     'handlers': {
-        'file': {
-            'level': 'WARNING',
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'logs' / 'fitmo.log',
-            'formatter': 'verbose',
+        'console': {
+            'class': 'logging.StreamHandler',
         },
     },
     'root': {
-        'handlers': ['file'],
-        'level': 'WARNING',
+        'handlers': ['console'],
+        'level': 'INFO',
     },
 }
-
-# Ensure logs directory exists
-import os
-LOG_DIR = BASE_DIR / 'logs'
-if not os.path.exists(LOG_DIR):
-    os.makedirs(LOG_DIR)

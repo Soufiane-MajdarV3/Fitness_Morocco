@@ -6,12 +6,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    # Determine which settings module to use
-    env = os.getenv('ENVIRONMENT', 'development')
-    if env == 'production':
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fitness_morocco.settings_vercel')
-    else:
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fitness_morocco.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fitness_morocco.settings')
     
     try:
         from django.core.management import execute_from_command_line
@@ -26,3 +21,10 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+# For Vercel serverless
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fitness_morocco.settings')
+
+from django.core.wsgi import get_wsgi_application
+app = get_wsgi_application()
