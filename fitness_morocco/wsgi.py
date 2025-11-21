@@ -11,14 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-# Determine which settings module to use
-env = os.getenv('ENVIRONMENT', 'development')
-if env == 'production':
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fitness_morocco.settings_vercel')
-else:
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fitness_morocco.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fitness_morocco.settings')
 
 application = get_wsgi_application()
-
-# Expose app variable for Vercel
-app = application
