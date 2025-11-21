@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}تأكيد الحجز والدفع - منصة فيتنس المغرب{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">تأكيد الحجز والدفع</h1>
+                <p class="text-gray-600 mt-2">الخطوة الثانية: أكمل عملية الدفع</p>
+            </div>
+
+            <!-- Booking Summary -->
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h3 class="text-xl font-bold text-gray-900 mb-4">ملخص الحجز</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between pb-4 border-b">
+                        <span class="text-gray-600">المدرب:</span>
+                        <span class="font-semibold">{{ booking.trainer.user.get_full_name }}</span>
+                    </div>
+                    <div class="flex justify-between pb-4 border-b">
+                        <span class="text-gray-600">نوع الجلسة:</span>
+                        <span class="font-semibold">{{ booking.session_type.name }}</span>
+                    </div>
+                    <div class="flex justify-between pb-4 border-b">
+                        <span class="text-gray-600">التاريخ والوقت:</span>
+                        <span class="font-semibold">{{ booking.booking_date|date:"d/m/Y" }} - {{ booking.start_time|time:"H:i" }}</span>
+                    </div>
+                    <div class="flex justify-between pb-4 border-b">
+                        <span class="text-gray-600">المدة:</span>
+                        <span class="font-semibold">{{ booking.duration_minutes }} دقيقة</span>
+                    </div>
+                    {% if booking.notes %}
+                    <div class="flex justify-between pb-4 border-b">
+                        <span class="text-gray-600">ملاحظات:</span>
+                        <span class="font-semibold">{{ booking.notes }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Payment Form -->
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h3 class="text-xl font-bold text-gray-900 mb-4">طريقة الدفع</h3>
+                
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+
+                    <!-- Display Errors -->
+                    {% if form.non_field_errors %}
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <p class="text-red-800 text-sm font-semibold mb-2">حدثت أخطاء:</p>
+                            {% for error in form.non_field_errors %}
+                                <p class="text-red-700 text-sm">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Payment Methods -->
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-4 p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="payment_method" value="card" class="w-4 h-4" required>
+                            <div class="flex items-center gap-3 flex-1">
+                                <i class="fas fa-credit-card text-indigo-600 text-2xl"></i>
+                                <div>
+                                    <p class="font-semibold text-gray-900">بطاقة ائتمان / خصم</p>
+                                    <p class="text-sm text-gray-600">فيزا، ماستركارد، أمريكان إكسبريس</p>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="flex items-center gap-4 p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="payment_method" value="wallet" class="w-4 h-4">
+                            <div class="flex items-center gap-3 flex-1">
+                                <i class="fas fa-wallet text-indigo-600 text-2xl"></i>
+                                <div>
+                                    <p class="font-semibold text-gray-900">محفظة رقمية</p>
+                                    <p class="text-sm text-gray-600">Google Pay، Apple Pay</p>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="flex items-center gap-4 p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="payment_method" value="bank_transfer" class="w-4 h-4">
+                            <div class="flex items-center gap-3 flex-1">
+                                <i class="fas fa-university text-indigo-600 text-2xl"></i>
+                                <div>
+                                    <p class="font-semibold text-gray-900">تحويل بنكي</p>
+                                    <p class="text-sm text-gray-600">تحويل مباشر من حسابك البنكي</p>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    {% if form.payment_method.errors %}
+                        <p class="text-red-500 text-sm">{{ form.payment_method.errors.0 }}</p>
+                    {% endif %}
+
+                    <!-- Terms -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <label class="flex items-start gap-2 cursor-pointer">
+                            <input type="checkbox" class="mt-1" required>
+                            <span class="text-sm text-blue-900">أوافق على سياسة الإلغاء والاسترجاع</span>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit"
+                        class="w-full bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
+                    >
+                        <i class="fas fa-lock ml-2"></i>
+                        إكمال الدفع والتأكيد
+                    </button>
+                </form>
+
+                <!-- Security Note -->
+                <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <div class="flex items-start gap-2">
+                        <i class="fas fa-shield-alt text-green-600 mt-1"></i>
+                        <div class="text-sm text-gray-600">
+                            <p class="font-semibold text-gray-900">دفع آمن وموثوق</p>
+                            <p>جميع المعاملات محمية بتشفير SSL وتوافق PCI DSS</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar - Price Summary -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-lg shadow-lg p-6 sticky top-20">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">ملخص السعر</h3>
+                
+                <div class="space-y-3 mb-4">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">السعر/الساعة:</span>
+                        <span class="font-semibold">{{ booking.trainer.price_per_hour }} درهم</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">عدد الساعات:</span>
+                        <span class="font-semibold">{{ booking.duration_minutes|add:0|divisibleby:"60"|yesno:"1 ساعة,نصف ساعة" }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm text-gray-600">
+                        <span>الخصم:</span>
+                        <span>0 درهم</span>
+                    </div>
+                    <div class="flex justify-between pt-3 border-t">
+                        <span class="font-bold">الإجمالي:</span>
+                        <span class="text-2xl font-bold text-indigo-600">{{ booking.total_price }} درهم</span>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mb-4">
+                    <div class="flex items-center gap-2 text-sm text-yellow-800">
+                        <i class="fas fa-clock"></i>
+                        <span>الحجز قيد الانتظار حتى تأكيد الدفع</span>
+                    </div>
+                </div>
+
+                <!-- Back Button -->
+                <a 
+                    href="javascript:history.back()"
+                    class="w-full block text-center bg-gray-200 text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                >
+                    <i class="fas fa-arrow-left ml-2"></i>
+                    العودة
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}حجز جلسة مع {{ trainer.user.get_full_name }} - منصة فيتنس المغرب{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Form -->
+        <div class="lg:col-span-2">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">احجز جلسة</h1>
+                <p class="text-gray-600 mt-2">مع {{ trainer.user.get_full_name }}</p>
+            </div>
+
+            <!-- Booking Form -->
+            <form method="post" class="bg-white rounded-lg shadow-lg p-8 space-y-6">
+                {% csrf_token %}
+
+                <!-- Display Errors -->
+                {% if form.non_field_errors %}
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <p class="text-red-800 text-sm font-semibold mb-2">حدثت أخطاء:</p>
+                        {% for error in form.non_field_errors %}
+                            <p class="text-red-700 text-sm">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Session Type -->
+                <div>
+                    <label for="{{ form.session_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.session_type.label }}
+                    </label>
+                    <div class="space-y-2">
+                        {% for value, label in form.session_type.field.choices %}
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input 
+                                    type="radio" 
+                                    name="session_type" 
+                                    value="{{ value }}"
+                                    class="rounded-full"
+                                    required
+                                >
+                                <span class="text-gray-700">{{ label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {% if form.session_type.errors %}
+                        <p class="text-red-500 text-sm mt-2">{{ form.session_type.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Booking Date -->
+                <div>
+                    <label for="{{ form.booking_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.booking_date.label }}
+                    </label>
+                    <input 
+                        type="date" 
+                        name="booking_date" 
+                        id="{{ form.booking_date.id_for_label }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        required
+                    >
+                    <p class="text-gray-600 text-sm mt-2">الحد الأدنى: غداً (لا يمكن الحجز لنفس اليوم)</p>
+                    {% if form.booking_date.errors %}
+                        <p class="text-red-500 text-sm mt-2">{{ form.booking_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Start Time -->
+                <div>
+                    <label for="{{ form.start_time.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.start_time.label }}
+                    </label>
+                    <input 
+                        type="time" 
+                        name="start_time" 
+                        id="{{ form.start_time.id_for_label }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        required
+                    >
+                    {% if form.start_time.errors %}
+                        <p class="text-red-500 text-sm mt-2">{{ form.start_time.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Duration -->
+                <div>
+                    <label for="{{ form.duration_minutes.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.duration_minutes.label }}
+                    </label>
+                    <div class="flex items-center gap-2 mb-3">
+                        <button type="button" class="duration-btn px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium" data-minutes="30">30 دقيقة</button>
+                        <button type="button" class="duration-btn px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium" data-minutes="60">1 ساعة</button>
+                        <button type="button" class="duration-btn px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium" data-minutes="90">ساعة ونصف</button>
+                        <button type="button" class="duration-btn px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium" data-minutes="120">ساعتان</button>
+                    </div>
+                    <input 
+                        type="number" 
+                        name="duration_minutes" 
+                        id="{{ form.duration_minutes.id_for_label }}"
+                        min="30"
+                        max="480"
+                        step="30"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        placeholder="أدخل المدة بالدقائق"
+                        required
+                    >
+                    {% if form.duration_minutes.errors %}
+                        <p class="text-red-500 text-sm mt-2">{{ form.duration_minutes.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Notes -->
+                <div>
+                    <label for="{{ form.notes.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.notes.label }}
+                    </label>
+                    <textarea 
+                        name="notes" 
+                        id="{{ form.notes.id_for_label }}"
+                        rows="4"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        placeholder="مثال: أنا مبتدئ، أريد التركيز على تمارين اللياقة البدنية الأساسية..."
+                    >{{ form.notes.value|default:'' }}</textarea>
+                    {% if form.notes.errors %}
+                        <p class="text-red-500 text-sm mt-2">{{ form.notes.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-6 border-t">
+                    <button 
+                        type="submit"
+                        class="w-full bg-indigo-600 text-white px-4 py-3 rounded-lg hover:bg-indigo-700 transition-colors font-semibold"
+                    >
+                        <i class="fas fa-check ml-2"></i>
+                        المتابعة للدفع
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sidebar - Trainer Info & Price -->
+        <div class="lg:col-span-1">
+            <!-- Trainer Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6 sticky top-20 space-y-4">
+                <!-- Avatar -->
+                <div class="text-center">
+                    <div class="w-24 h-24 rounded-lg bg-indigo-100 flex items-center justify-center mx-auto mb-3">
+                        {% if trainer.user.profile_image %}
+                            <img src="{{ trainer.user.profile_image.url }}" alt="{{ trainer.user.get_full_name }}" class="w-full h-full object-cover rounded-lg">
+                        {% else %}
+                            <i class="fas fa-user text-indigo-600 text-3xl"></i>
+                        {% endif %}
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">{{ trainer.user.get_full_name }}</h3>
+                    <div class="flex justify-center text-yellow-400 mt-1">
+                        {% for i in "12345" %}
+                            {% if i|add:0 <= trainer.rating %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="border-t pt-4">
+                    <!-- Price Summary -->
+                    <div class="space-y-3 mb-4">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">السعر/الساعة:</span>
+                            <span class="font-semibold">{{ trainer.price_per_hour }} درهم</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">المدة:</span>
+                            <span class="font-semibold duration-display">غير محدد</span>
+                        </div>
+                        <div class="flex justify-between pt-2 border-t">
+                            <span class="font-bold">الإجمالي:</span>
+                            <span class="text-2xl font-bold text-indigo-600 total-price">0 درهم</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trainer Details -->
+                <div class="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-briefcase text-indigo-600"></i>
+                        <span>خبرة: {{ trainer.experience_years }} سنة</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-calendar-check text-indigo-600"></i>
+                        <span>{{ trainer.total_sessions }} جلسة مكتملة</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-star text-indigo-600"></i>
+                        <span>{{ trainer.reviews.count }} تقييم</span>
+                    </div>
+                </div>
+
+                <!-- Terms -->
+                <div class="text-xs text-gray-600">
+                    <label class="flex items-start gap-2 cursor-pointer">
+                        <input type="checkbox" class="mt-1" required>
+                        <span>أوافق على الشروط والأحكام</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const durationButtons = document.querySelectorAll('.duration-btn');
+    const durationInput = document.getElementById('{{ form.duration_minutes.id_for_label }}');
+    const pricePerHour = {{ trainer.price_per_hour }};
+    const durationDisplay = document.querySelector('.duration-display');
+    const totalPrice = document.querySelector('.total-price');
+
+    function updatePrice() {
+        const minutes = parseInt(durationInput.value) || 0;
+        const hours = minutes / 60;
+        const price = Math.round(pricePerHour * hours * 100) / 100;
+        
+        totalPrice.textContent = `${price} درهم`;
+        
+        if (minutes === 0) {
+            durationDisplay.textContent = 'غير محدد';
+        } else if (minutes < 60) {
+            durationDisplay.textContent = `${minutes} دقيقة`;
+        } else {
+            const h = Math.floor(minutes / 60);
+            const m = minutes % 60;
+            if (m === 0) {
+                durationDisplay.textContent = `${h} ساعة`;
+            } else {
+                durationDisplay.textContent = `${h} ساعة و${m} دقيقة`;
+            }
+        }
+    }
+
+    durationButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const minutes = button.dataset.minutes;
+            durationInput.value = minutes;
+            updatePrice();
+            
+            // Update button styles
+            durationButtons.forEach(b => b.classList.remove('bg-indigo-100', 'text-indigo-700', 'border-indigo-600'));
+            button.classList.add('bg-indigo-100', 'text-indigo-700', 'border-indigo-600');
+        });
+    });
+
+    durationInput.addEventListener('change', updatePrice);
+    
+    // Initialize price
+    updatePrice();
+</script>
+{% endblock %}

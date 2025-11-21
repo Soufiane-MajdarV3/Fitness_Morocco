@@ -1,0 +1,799 @@
+{% extends 'base.html' %}
+
+{% block title %}المدربون - منصة فيتنس المغرب{% endblock %}
+
+{% block extra_css %}
+    
+    <style>
+        body {
+            font-family: 'Noto Naskh Arabic', serif;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #6366f1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4f46e5;
+        }
+        
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        /* Gradient backgrounds */
+        .gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        /* Dark mode styles */
+        .dark {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        
+        .dark .bg-white {
+            background-color: #2d3748;
+        }
+        
+        .dark .text-gray-800 {
+            color: #e2e8f0;
+        }
+        
+        .dark .text-gray-600 {
+            color: #cbd5e0;
+        }
+        
+        .dark .bg-gray-50 {
+            background-color: #2d3748;
+        }
+        
+        .dark .border-gray-200 {
+            border-color: #4a5568;
+        }
+        
+        /* Filter sidebar transition */
+        .filter-sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .filter-sidebar.hidden {
+            transform: translateX(100%);
+        }
+        
+        /* Trainer card hover effect */
+        .trainer-card {
+            transition: all 0.3s ease;
+        }
+        
+        .trainer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        /* Rating stars */
+        .star-rating {
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white shadow-md transition-all duration-300">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <div class="flex items-center space-x-reverse space-x-2">
+                    <i class="fas fa-dumbbell text-indigo-600 text-2xl"></i>
+                    <span class="text-xl font-bold text-indigo-600">فيتنس المغرب</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-reverse space-x-6">
+                    <a href="index.html" class="text-gray-700 hover:text-indigo-600 transition-colors">الرئيسية</a>
+                    <a href="trainers.html" class="text-indigo-600 font-semibold">المدربون</a>
+                    <a href="#how-it-works" class="text-gray-700 hover:text-indigo-600 transition-colors">كيف يعمل</a>
+                    <a href="dashboard.html" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">لوحة التحكم</a>
+                    <button id="darkModeToggle" class="text-gray-700 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden text-gray-700">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden pb-4">
+                <div class="flex flex-col space-y-2">
+                    <a href="index.html" class="text-gray-700 hover:text-indigo-600 transition-colors py-2">الرئيسية</a>
+                    <a href="trainers.html" class="text-indigo-600 font-semibold py-2">المدربون</a>
+                    <a href="#how-it-works" class="text-gray-700 hover:text-indigo-600 transition-colors py-2">كيف يعمل</a>
+                    <a href="dashboard.html" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-center">لوحة التحكم</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="gradient-primary text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h1 class="text-3xl md:text-4xl font-bold mb-4">ابحث عن مدربك الشخصي</h1>
+                <p class="text-lg md:text-xl opacity-90">اكتشف أفضل المدربين في مدينتك واحجز جلستك التالية</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- Filters Sidebar -->
+            <aside class="lg:w-1/4">
+                <!-- Mobile Filter Toggle -->
+                <button id="mobileFilterToggle" class="lg:hidden bg-indigo-600 text-white px-4 py-2 rounded-lg mb-4 w-full">
+                    <i class="fas fa-filter ml-2"></i>
+                    فلترة النتائج
+                </button>
+                
+                <!-- Filter Sidebar -->
+                <div id="filterSidebar" class="filter-sidebar bg-white rounded-xl shadow-lg p-6 lg:sticky lg:top-24">
+                    <h3 class="text-xl font-semibold mb-6">الفلاتر</h3>
+                    
+                    <!-- City Filter -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">المدينة</label>
+                        <select id="cityFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option value="">جميع المدن</option>
+                            <option value="casablanca">الدار البيضاء</option>
+                            <option value="rabat">الرباط</option>
+                            <option value="marrakech">مراكش</option>
+                            <option value="fes">فاس</option>
+                            <option value="tangier">طنجة</option>
+                            <option value="agadir">أكادير</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Specialty Filter -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">التخصص</label>
+                        <select id="specialtyFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option value="">جميع التخصصات</option>
+                            <option value="fitness">لياقة بدنية</option>
+                            <option value="crossfit">كروس فت</option>
+                            <option value="yoga">يوغا</option>
+                            <option value="boxing">ملاكمة</option>
+                            <option value="swimming">سباحة</option>
+                            <option value="nutrition">تغذية</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Price Filter -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">السعر (درهم/ساعة)</label>
+                        <div class="flex items-center space-x-reverse space-x-2">
+                            <input type="number" id="minPrice" placeholder="الحد الأدنى" class="w-1/2 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <input type="number" id="maxPrice" placeholder="الحد الأقصى" class="w-1/2 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        </div>
+                    </div>
+                    
+                    <!-- Experience Filter -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">الخبرة</label>
+                        <select id="experienceFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option value="">الكل</option>
+                            <option value="1">1 - 3 سنوات</option>
+                            <option value="2">3 - 5 سنوات</option>
+                            <option value="3">5 - 10 سنوات</option>
+                            <option value="4">+10 سنوات</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Rating Filter -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">التقييم</label>
+                        <div class="flex space-x-reverse space-x-1">
+                            <button onclick="setRatingFilter(5)" class="star-rating text-2xl hover:scale-110 transition-transform">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button onclick="setRatingFilter(4)" class="star-rating text-2xl hover:scale-110 transition-transform">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button onclick="setRatingFilter(3)" class="star-rating text-2xl hover:scale-110 transition-transform">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button onclick="setRatingFilter(2)" class="star-rating text-2xl hover:scale-110 transition-transform">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button onclick="setRatingFilter(1)" class="star-rating text-2xl hover:scale-110 transition-transform">
+                                <i class="fas fa-star"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Apply Filters Button -->
+                    <button onclick="applyFilters()" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                        تطبيق الفلاتر
+                    </button>
+                    
+                    <!-- Reset Filters Button -->
+                    <button onclick="resetFilters()" class="w-full mt-2 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                        إعادة تعيين
+                    </button>
+                </div>
+            </aside>
+            
+            <!-- Trainers Grid -->
+            <section class="lg:w-3/4">
+                <!-- Results Header -->
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-semibold">المدربون</h2>
+                        <p class="text-gray-600">تم العثور على <span id="resultsCount">24</span> مدرب</p>
+                    </div>
+                    
+                    <!-- Sort Dropdown -->
+                    <div class="hidden md:block">
+                        <select id="sortSelect" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option value="rating">الأعلى تقييماً</option>
+                            <option value="price-low">الأقل سعراً</option>
+                            <option value="price-high">الأعلى سعراً</option>
+                            <option value="experience">الأكثر خبرة</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Trainers Grid -->
+                <div id="trainersGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <!-- Trainer cards will be dynamically inserted here -->
+                </div>
+                
+                <!-- Pagination -->
+                <div class="mt-8 flex justify-center">
+                    <nav class="flex space-x-reverse space-x-2">
+                        <button onclick="changePage('prev')" class="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button onclick="changePage(1)" class="px-4 py-2 bg-indigo-600 text-white rounded-lg">1</button>
+                        <button onclick="changePage(2)" class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">2</button>
+                        <button onclick="changePage(3)" class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">3</button>
+                        <button onclick="changePage(4)" class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">4</button>
+                        <button onclick="changePage('next')" class="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                    </nav>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center space-x-reverse space-x-2 mb-4">
+                        <i class="fas fa-dumbbell text-indigo-400 text-2xl"></i>
+                        <span class="text-xl font-bold">فيتنس المغرب</span>
+                    </div>
+                    <p class="text-gray-400">منصتك الأولى لحجز المدربين الشخصيين والنوادي الرياضية في المغرب</p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-semibold mb-4">روابط سريعة</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white transition-colors">الرئيسية</a></li>
+                        <li><a href="trainers.html" class="text-gray-400 hover:text-white transition-colors">المدربون</a></li>
+                        <li><a href="#how-it-works" class="text-gray-400 hover:text-white transition-colors">كيف يعمل</a></li>
+                        <li><a href="dashboard.html" class="text-gray-400 hover:text-white transition-colors">لوحة التحكم</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Support -->
+                <div>
+                    <h4 class="font-semibold mb-4">الدعم</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">الأسئلة الشائعة</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">اتصل بنا</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">الشروط والأحكام</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">سياسة الخصوصية</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Social Media -->
+                <div>
+                    <h4 class="font-semibold mb-4">تابعنا</h4>
+                    <div class="flex space-x-reverse space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook-f text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin-in text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-400">جميع الحقوق محفوظة © 2024 فيتنس المغرب</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 left-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-full transition-transform duration-300 z-50">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle ml-2"></i>
+            <span id="toastMessage">تمت العملية بنجاح!</span>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // Sample trainer data
+        const trainers = [
+            {
+                id: 1,
+                name: "أحمد الرماحي",
+                specialty: "لياقة بدنية",
+                city: "الدار البيضاء",
+                rating: 4.8,
+                reviews: 124,
+                price: 250,
+                experience: "8 سنوات",
+                image: "https://picsum.photos/seed/trainer1/300/300.jpg",
+                specialties: ["لياقة بدنية", "كروس فت", "تغذية"]
+            },
+            {
+                id: 2,
+                name: "فاطمة الزهراء",
+                specialty: "يوغا",
+                city: "الرباط",
+                rating: 4.9,
+                reviews: 89,
+                price: 200,
+                experience: "5 سنوات",
+                image: "https://picsum.photos/seed/trainer2/300/300.jpg",
+                specialties: ["يوغا", "تأمل", "مرونة"]
+            },
+            {
+                id: 3,
+                name: "يوسف الأمين",
+                specialty: "ملاكمة",
+                city: "مراكش",
+                rating: 4.7,
+                reviews: 156,
+                price: 300,
+                experience: "10 سنوات",
+                image: "https://picsum.photos/seed/trainer3/300/300.jpg",
+                specialties: ["ملاكمة", "دفاع عن النفس", "لياقة بدنية"]
+            },
+            {
+                id: 4,
+                name: "نور الدين",
+                specialty: "سباحة",
+                city: "فاس",
+                rating: 4.6,
+                reviews: 67,
+                price: 280,
+                experience: "6 سنوات",
+                image: "https://picsum.photos/seed/trainer4/300/300.jpg",
+                specialties: ["سباحة", "لياقة مائية", "إعادة تأهيل"]
+            },
+            {
+                id: 5,
+                name: "سارة البكري",
+                specialty: "كروس فت",
+                city: "طنجة",
+                rating: 4.9,
+                reviews: 203,
+                price: 350,
+                experience: "7 سنوات",
+                image: "https://picsum.photos/seed/trainer5/300/300.jpg",
+                specialties: ["كروس فت", "قوة", "تحمل"]
+            },
+            {
+                id: 6,
+                name: "عبد الرحيم",
+                specialty: "تغذية",
+                city: "أكادير",
+                rating: 4.8,
+                reviews: 145,
+                price: 220,
+                experience: "12 سنة",
+                image: "https://picsum.photos/seed/trainer6/300/300.jpg",
+                specialties: ["تغذية", "تخسيس", "بناء عضل"]
+            }
+        ];
+        
+        let currentPage = 1;
+        let filteredTrainers = [...trainers];
+        let ratingFilter = 0;
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTrainers();
+            loadSearchParameters();
+        });
+        
+        // Load search parameters from localStorage
+        function loadSearchParameters() {
+            const city = localStorage.getItem('searchCity');
+            const specialty = localStorage.getItem('searchSpecialty');
+            
+            if (city) {
+                document.getElementById('cityFilter').value = city;
+            }
+            if (specialty) {
+                document.getElementById('specialtyFilter').value = specialty;
+            }
+            
+            if (city || specialty) {
+                applyFilters();
+            }
+        }
+        
+        // Load trainers into the grid
+        function loadTrainers() {
+            const grid = document.getElementById('trainersGrid');
+            grid.innerHTML = '';
+            
+            filteredTrainers.forEach(trainer => {
+                const card = createTrainerCard(trainer);
+                grid.innerHTML += card;
+            });
+            
+            updateResultsCount();
+        }
+        
+        // Create trainer card HTML
+        function createTrainerCard(trainer) {
+            const stars = generateStars(trainer.rating);
+            
+            return `
+                <div class="trainer-card bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="relative">
+                        <img src="${trainer.image}" alt="${trainer.name}" class="w-full h-48 object-cover">
+                        <div class="absolute top-2 left-2 bg-indigo-600 text-white px-2 py-1 rounded-lg text-sm">
+                            ${trainer.specialty}
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="text-xl font-semibold">${trainer.name}</h3>
+                                <p class="text-gray-600 text-sm">${trainer.city}</p>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-2xl font-bold text-indigo-600">${trainer.price}</p>
+                                <p class="text-gray-600 text-sm">درهم/ساعة</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center mb-3">
+                            <div class="star-rating">${stars}</div>
+                            <span class="mr-2 text-gray-600">(${trainer.reviews} تقييم)</span>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <p class="text-gray-600 text-sm mb-2">التخصصات:</p>
+                            <div class="flex flex-wrap gap-2">
+                                ${trainer.specialties.map(spec => `
+                                    <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
+                                        ${spec}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-briefcase text-gray-400 ml-2"></i>
+                            <span class="text-gray-600 text-sm">${trainer.experience} خبرة</span>
+                        </div>
+                        
+                        <div class="flex space-x-reverse space-x-2">
+                            <button onclick="viewTrainerProfile(${trainer.id})" class="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                                عرض التفاصيل
+                            </button>
+                            <button onclick="bookTrainer(${trainer.id})" class="flex-1 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                                احجز الآن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Generate star rating HTML
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            let stars = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            
+            const emptyStars = 5 - Math.ceil(rating);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            
+            return stars;
+        }
+        
+        // Apply filters
+        function applyFilters() {
+            const city = document.getElementById('cityFilter').value;
+            const specialty = document.getElementById('specialtyFilter').value;
+            const minPrice = document.getElementById('minPrice').value;
+            const maxPrice = document.getElementById('maxPrice').value;
+            const experience = document.getElementById('experienceFilter').value;
+            
+            filteredTrainers = trainers.filter(trainer => {
+                let matches = true;
+                
+                if (city && trainer.city !== getCityName(city)) {
+                    matches = false;
+                }
+                
+                if (specialty && trainer.specialty !== getSpecialtyName(specialty)) {
+                    matches = false;
+                }
+                
+                if (minPrice && trainer.price < parseInt(minPrice)) {
+                    matches = false;
+                }
+                
+                if (maxPrice && trainer.price > parseInt(maxPrice)) {
+                    matches = false;
+                }
+                
+                if (experience && !matchesExperience(trainer.experience, experience)) {
+                    matches = false;
+                }
+                
+                if (ratingFilter > 0 && trainer.rating < ratingFilter) {
+                    matches = false;
+                }
+                
+                return matches;
+            });
+            
+            loadTrainers();
+            showToast('تم تطبيق الفلاتر بنجاح');
+        }
+        
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('cityFilter').value = '';
+            document.getElementById('specialtyFilter').value = '';
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('experienceFilter').value = '';
+            ratingFilter = 0;
+            
+            filteredTrainers = [...trainers];
+            loadTrainers();
+            showToast('تم إعادة تعيين الفلاتر');
+        }
+        
+        // Set rating filter
+        function setRatingFilter(rating) {
+            ratingFilter = rating;
+            applyFilters();
+        }
+        
+        // View trainer profile
+        function viewTrainerProfile(trainerId) {
+            localStorage.setItem('selectedTrainerId', trainerId);
+            window.location.href = 'trainer-profile.html';
+        }
+        
+        // Book trainer
+        function bookTrainer(trainerId) {
+            localStorage.setItem('selectedTrainerId', trainerId);
+            window.location.href = 'booking.html';
+        }
+        
+        // Change page
+        function changePage(page) {
+            // Implementation for pagination
+            if (page === 'prev' && currentPage > 1) {
+                currentPage--;
+            } else if (page === 'next' && currentPage < 4) {
+                currentPage++;
+            } else if (typeof page === 'number') {
+                currentPage = page;
+            }
+            
+            // Update pagination buttons
+            updatePagination();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Update pagination buttons
+        function updatePagination() {
+            const buttons = document.querySelectorAll('nav button');
+            buttons.forEach((button, index) => {
+                if (index > 0 && index < 5) {
+                    button.classList.remove('bg-indigo-600', 'text-white');
+                    button.classList.add('bg-white', 'border', 'border-gray-300');
+                    
+                    if (index === currentPage) {
+                        button.classList.remove('bg-white', 'border', 'border-gray-300');
+                        button.classList.add('bg-indigo-600', 'text-white');
+                    }
+                }
+            });
+        }
+        
+        // Update results count
+        function updateResultsCount() {
+            document.getElementById('resultsCount').textContent = filteredTrainers.length;
+        }
+        
+        // Helper functions
+        function getCityName(cityCode) {
+            const cities = {
+                'casablanca': 'الدار البيضاء',
+                'rabat': 'الرباط',
+                'marrakech': 'مراكش',
+                'fes': 'فاس',
+                'tangier': 'طنجة',
+                'agadir': 'أكادير'
+            };
+            return cities[cityCode] || cityCode;
+        }
+        
+        function getSpecialtyName(specialtyCode) {
+            const specialties = {
+                'fitness': 'لياقة بدنية',
+                'crossfit': 'كروس فت',
+                'yoga': 'يوغا',
+                'boxing': 'ملاكمة',
+                'swimming': 'سباحة',
+                'nutrition': 'تغذية'
+            };
+            return specialties[specialtyCode] || specialtyCode;
+        }
+        
+        function matchesExperience(experience, filter) {
+            const years = parseInt(experience);
+            switch (filter) {
+                case '1': return years >= 1 && years <= 3;
+                case '2': return years >= 3 && years <= 5;
+                case '3': return years >= 5 && years <= 10;
+                case '4': return years >= 10;
+                default: return true;
+            }
+        }
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Mobile filter toggle
+        const mobileFilterToggle = document.getElementById('mobileFilterToggle');
+        const filterSidebar = document.getElementById('filterSidebar');
+        
+        mobileFilterToggle.addEventListener('click', () => {
+            filterSidebar.classList.toggle('hidden');
+        });
+        
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+        
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark');
+            const icon = darkModeToggle.querySelector('i');
+            if (body.classList.contains('dark')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+        
+        // Sort functionality
+        document.getElementById('sortSelect').addEventListener('change', (e) => {
+            const sortBy = e.target.value;
+            
+            switch (sortBy) {
+                case 'rating':
+                    filteredTrainers.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'price-low':
+                    filteredTrainers.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredTrainers.sort((a, b) => b.price - a.price);
+                    break;
+                case 'experience':
+                    filteredTrainers.sort((a, b) => {
+                        const aExp = parseInt(a.experience);
+                        const bExp = parseInt(b.experience);
+                        return bExp - aExp;
+                    });
+                    break;
+            }
+            
+            loadTrainers();
+        });
+        
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            
+            if (type === 'error') {
+                toast.classList.remove('bg-green-500');
+                toast.classList.add('bg-red-500');
+            } else {
+                toast.classList.remove('bg-red-500');
+                toast.classList.add('bg-green-500');
+            }
+            
+            toast.classList.remove('translate-y-full');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-full');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

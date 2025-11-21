@@ -1,0 +1,605 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}منصة فيتنس المغرب - احجز مدربك الشخصي | Fitness Morocco{% endblock %}
+
+{% block extra_css %}
+<style>
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+    }
+    
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .card-hover {
+        transition: all 0.3s ease;
+    }
+
+    .card-hover:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+    }
+
+    .badge-pulse {
+        animation: pulse 3s infinite;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <!-- Hero Section with Trust Indicators -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 text-white py-20 md:py-32">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 left-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative container mx-auto px-4 z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Left: Main Message -->
+                <div class="animate-fade-in-up">
+                    <div class="inline-block bg-indigo-500/20 backdrop-blur-sm border border-indigo-400/30 rounded-full px-4 py-2 mb-6">
+                        <span class="text-sm font-semibold">🚀 منصة فيتنس رقم 1 في المغرب</span>
+                    </div>
+
+                    <h1 class="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                        ابدأ رحلتك الرياضية مع 
+                        <span class="gradient-text">أفضل المدربين</span>
+                    </h1>
+
+                    <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                        منصة متخصصة في ربط العملاء بأفضل المدربين الشخصيين المعتمدين في كل أنحاء المغرب. احجز جلستك بسهولة وابدأ التحول الآن!
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'signup' %}" class="bg-white text-indigo-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 text-center">
+                                <i class="fas fa-play-circle ml-2"></i>
+                                ابدأ الآن مجاناً
+                            </a>
+                            <a href="{% url 'trainers' %}" class="border-2 border-white text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition-all text-center">
+                                <i class="fas fa-search ml-2"></i>
+                                استكشف المدربين
+                            </a>
+                        {% else %}
+                            <a href="{% url 'trainers' %}" class="bg-white text-indigo-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 text-center">
+                                <i class="fas fa-search ml-2"></i>
+                                ابحث عن مدرب
+                            </a>
+                            <a href="{% url 'client_dashboard' %}" class="border-2 border-white text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition-all text-center">
+                                <i class="fas fa-chart-line ml-2"></i>
+                                لوحة التحكم
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div class="flex flex-wrap gap-6 pt-8 border-t border-white/20">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                            <span>+10,000 عميل سعيد</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-star text-yellow-400 text-xl"></i>
+                            <span>تقييم 4.9/5</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-shield-alt text-blue-400 text-xl"></i>
+                            <span>منصة موثوقة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Visual -->
+                <div class="hidden lg:block animate-fade-in-up" style="animation-delay: 0.2s">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl blur-2xl opacity-20"></div>
+                        <div class="relative bg-gradient-to-br from-indigo-600/20 to-purple-600/20 backdrop-blur-xl rounded-3xl border border-white/20 p-8">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
+                                    <div class="text-4xl font-bold text-indigo-300 mb-2">500+</div>
+                                    <p class="text-sm text-gray-300">مدرب معتمد</p>
+                                </div>
+                                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
+                                    <div class="text-4xl font-bold text-purple-300 mb-2">6</div>
+                                    <p class="text-sm text-gray-300">مدن رئيسية</p>
+                                </div>
+                                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
+                                    <div class="text-4xl font-bold text-indigo-300 mb-2">50K+</div>
+                                    <p class="text-sm text-gray-300">جلسة مكتملة</p>
+                                </div>
+                                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
+                                    <div class="text-4xl font-bold text-purple-300 mb-2">24/7</div>
+                                    <p class="text-sm text-gray-300">دعم فني</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dual Value Proposition -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-16">للعملاء والمدربين على حد سواء</h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- For Clients -->
+                <div class="card-hover bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-indigo-200">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="bg-indigo-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">للعملاء</h3>
+                    </div>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-gray-700"><strong>ابحث بسهولة:</strong> فلاتر متقدمة حسب المدينة والتخصص والسعر</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-gray-700"><strong>مدربون معتمدون:</strong> نتحقق من جودة كل مدرب شخصياً</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-gray-700"><strong>احجز فوراً:</strong> نظام حجز آمن وسريع</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-gray-700"><strong>تتبع تقدمك:</strong> لوحة تحكم شاملة لمراقبة جلساتك</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-gray-700"><strong>دفع آمن:</strong> طرق دفع متعددة ومشفرة</span>
+                        </li>
+                    </ul>
+
+                    <a href="{% url 'trainers' %}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all">
+                        ابدأ البحث الآن
+                    </a>
+                </div>
+
+                <!-- For Trainers -->
+                <div class="card-hover bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 border border-purple-200">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="bg-purple-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">للمدربين</h3>
+                    </div>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-gray-700"><strong>عملاء جدد:</strong> وصل إلى آلاف العملاء المحتملين</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-gray-700"><strong>إدارة سهلة:</strong> لوحة تحكم مخصصة لإدارة جلساتك</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-gray-700"><strong>محفظة رقمية:</strong> احصل على أموالك بسهولة</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-gray-700"><strong>بناء سمعتك:</strong> نظام تقييمات وتقديرات شفاف</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-gray-700"><strong>بدون عمولة مخفية:</strong> أسعار واضحة وشفافة</span>
+                        </li>
+                    </ul>
+
+                    <a href="{% url 'signup' %}" class="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-all">
+                        انضم كمدرب الآن
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-6">المميزات الرئيسية</h2>
+            <p class="text-xl text-gray-600 text-center mb-16 max-w-2xl mx-auto">منصة متكاملة توفر كل ما تحتاجه لتحقيق أهدافك الرياضية</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="card-hover bg-white rounded-xl p-8 border border-gray-200">
+                    <div class="bg-indigo-100 w-14 h-14 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-search text-indigo-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">بحث متقدم</h3>
+                    <p class="text-gray-600">ابحث حسب المدينة والتخصص والسعر والتقييم</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="card-hover bg-white rounded-xl p-8 border border-gray-200">
+                    <div class="bg-green-100 w-14 h-14 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-calendar-alt text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">جدولة مرنة</h3>
+                    <p class="text-gray-600">احجز جلساتك حسب توفر المدرب وأوقاتك</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="card-hover bg-white rounded-xl p-8 border border-gray-200">
+                    <div class="bg-purple-100 w-14 h-14 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-user-check text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">مدربون معتمدون</h3>
+                    <p class="text-gray-600">كل مدرب يمر على عملية تحقق صارمة</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="card-hover bg-white rounded-xl p-8 border border-gray-200">
+                    <div class="bg-yellow-100 w-14 h-14 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-star text-yellow-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">تقييمات حقيقية</h3>
+                    <p class="text-gray-600">اقرأ تقييمات العملاء الفعليين للمدربين</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="card-hover bg-white rounded-xl p-8 border border-gray-200">
+                    <div class="bg-red-100 w-14 h-14 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-lock text-red-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">أمان عالي</h3>
+                    <p class="text-gray-600">تشفير كامل لبياناتك وعملياتك المالية</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="card-hover bg-white rounded-xl p-8 border border-gray-200">
+                    <div class="bg-blue-100 w-14 h-14 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-line text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">تحليلات مفصلة</h3>
+                    <p class="text-gray-600">تتبع تقدمك وأداؤك الرياضي بسهولة</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-16">كيف يعمل النظام؟</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
+                <!-- Step 1 -->
+                <div class="text-center">
+                    <div class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold shadow-lg">
+                        1
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">إنشاء حساب</h3>
+                    <p class="text-gray-600">سجل بسهولة وأكمل ملفك الشخصي</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="text-center">
+                    <div class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold shadow-lg">
+                        2
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">ابحث واكتشف</h3>
+                    <p class="text-gray-600">جد المدرب المناسب لأهدافك</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="text-center">
+                    <div class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold shadow-lg">
+                        3
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">احجز الآن</h3>
+                    <p class="text-gray-600">اختر الوقت والدفع آمن</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="text-center">
+                    <div class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold shadow-lg">
+                        4
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">ابدأ التدريب</h3>
+                    <p class="text-gray-600">استمتع بجلسة احترافية</p>
+                </div>
+
+                <!-- Connection Lines (desktop only) -->
+                <div class="hidden md:block absolute top-8 left-1/4 right-1/4 h-1 bg-gradient-to-r from-indigo-600 to-purple-600 -z-10" style="width: calc(100% - 100px); left: 50px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-16">ماذا يقول عملاؤنا؟</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {% for i in "123" %}
+                    <div class="card-hover bg-white rounded-xl p-8 border border-gray-200">
+                        <div class="flex items-center gap-1 mb-4">
+                            {% for j in "12345" %}
+                                <i class="fas fa-star text-yellow-400"></i>
+                            {% endfor %}
+                        </div>
+                        <p class="text-gray-700 mb-6 italic leading-relaxed">
+                            "منصة رائعة جداً! وجدت مدرب شخصي محترف جداً ساعدني على تحقيق أهدافي في وقت قياسي. التطبيق سهل الاستخدام والفريق متعاون جداً."
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <i class="fas fa-user text-indigo-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold">محمد أحمد</p>
+                                <p class="text-sm text-gray-600">الدار البيضاء</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Trainers -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-6">أفضل المدربين لديك</h2>
+            <p class="text-xl text-gray-600 text-center mb-16">الأعلى تقييماً والأكثر حجزاً</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for trainer in featured_trainers %}
+                    <div class="card-hover bg-white rounded-2xl overflow-hidden border border-gray-200">
+                        <div class="h-40 bg-gradient-to-r from-indigo-500 to-purple-600 relative overflow-hidden">
+                            <div class="absolute inset-0 opacity-20">
+                                <div class="absolute top-0 right-0 w-40 h-40 bg-white rounded-full -mr-20 -mt-20"></div>
+                            </div>
+                        </div>
+
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">{{ trainer.user.get_full_name }}</h3>
+                            
+                            <!-- Specialties -->
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                {% for spec in trainer.specialties.all|slice:":2" %}
+                                    <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full">{{ spec.name }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Rating -->
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="flex text-yellow-400">
+                                    {% for i in "12345" %}
+                                        {% if i|add:0 <= trainer.rating %}
+                                            <i class="fas fa-star"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <span class="font-bold text-gray-900">{{ trainer.rating|floatformat:1 }}</span>
+                                <span class="text-gray-600 text-sm">({{ trainer.total_reviews }} تقييم)</span>
+                            </div>
+
+                            <!-- Experience & Sessions -->
+                            <div class="grid grid-cols-2 gap-3 mb-4 py-3 border-t border-b">
+                                <div class="text-center">
+                                    <p class="text-lg font-bold text-indigo-600">{{ trainer.experience_years }}+</p>
+                                    <p class="text-xs text-gray-600">سنوات</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-lg font-bold text-purple-600">{{ trainer.total_sessions }}</p>
+                                    <p class="text-xs text-gray-600">جلسة</p>
+                                </div>
+                            </div>
+
+                            <!-- Price & Button -->
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <p class="text-sm text-gray-600">السعر</p>
+                                    <p class="text-2xl font-bold text-indigo-600">{{ trainer.price_per_hour }}<span class="text-sm text-gray-600">د.م</span></p>
+                                </div>
+                            </div>
+
+                            <a href="{% url 'trainer_detail' trainer.id %}" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-3 rounded-lg font-semibold hover:shadow-lg transition-all text-center block">
+                                <i class="fas fa-eye ml-2"></i>
+                                عرض الملف
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="{% url 'trainers' %}" class="inline-block bg-indigo-600 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl">
+                    <i class="fas fa-arrow-left ml-2"></i>
+                    عرض جميع المدربين
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cities Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-6">متواجدون في كل أنحاء المغرب</h2>
+            <p class="text-xl text-gray-600 text-center mb-16">اختر مدينتك وابدأ الآن</p>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                {% for city in cities %}
+                    <a href="{% url 'trainers' %}?city={{ city.code }}" class="card-hover bg-white rounded-xl p-6 text-center border border-gray-200 hover:border-indigo-600">
+                        <div class="text-4xl mb-3">📍</div>
+                        <h3 class="font-bold text-gray-900 mb-1">{{ city.name }}</h3>
+                        <p class="text-indigo-600 text-sm font-semibold">500+ مدرب</p>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-16">أسئلة متكررة</h2>
+
+            <div class="max-w-3xl mx-auto space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+                    <button class="faq-toggle w-full px-6 py-4 text-left font-semibold flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <span>كيف أبدأ البحث عن مدرب؟</span>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 py-4 bg-white text-gray-700">
+                        ما عليك سوى الذهاب إلى صفحة البحث واختيار مدينتك والتخصص الذي تريده، ثم ستجد قائمة بأفضل المدربين مع تقييماتهم.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+                    <button class="faq-toggle w-full px-6 py-4 text-left font-semibold flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <span>كم تكلفة الحجز؟</span>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 py-4 bg-white text-gray-700">
+                        التكاليف تختلف حسب المدرب والتخصص. كل مدرب يحدد أسعاره بنفسه. المنصة لا تأخذ عمولة إضافية.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+                    <button class="faq-toggle w-full px-6 py-4 text-left font-semibold flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <span>هل آمن الدفع عبر المنصة؟</span>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 py-4 bg-white text-gray-700">
+                        نعم، جميع عمليات الدفع مشفرة بالكامل وآمنة جداً. نستخدم أحدث تقنيات الأمان والتشفير.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+                    <button class="faq-toggle w-full px-6 py-4 text-left font-semibold flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <span>كيفية الاشتراك كمدرب؟</span>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 py-4 bg-white text-gray-700">
+                        اضغط على "انضم كمدرب"، أنشئ حسابك، أكمل ملفك الشخصي مع شهاداتك وخبراتك، وسنقوم بمراجعة طلبك في خلال 48 ساعة.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="py-20 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl lg:text-5xl font-bold mb-6">ابدأ رحلتك الرياضية اليوم</h2>
+            <p class="text-xl mb-10 opacity-90 max-w-2xl mx-auto">انضم إلى آلاف العملاء المسعدين والمدربين الناجحين</p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'signup' %}" class="bg-white text-indigo-600 px-10 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all shadow-lg">
+                        <i class="fas fa-user-plus ml-2"></i>
+                        سجل مجاناً
+                    </a>
+                    <a href="{% url 'trainers' %}" class="border-2 border-white text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition-all">
+                        <i class="fas fa-search ml-2"></i>
+                        ابحث الآن
+                    </a>
+                {% else %}
+                    <a href="{% url 'trainers' %}" class="bg-white text-indigo-600 px-10 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all shadow-lg">
+                        <i class="fas fa-search ml-2"></i>
+                        ابحث عن مدرب
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Info -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div>
+                    <div class="text-4xl font-bold text-indigo-600 mb-2">10,000+</div>
+                    <p class="text-gray-600">عميل سعيد</p>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-purple-600 mb-2">500+</div>
+                    <p class="text-gray-600">مدرب معتمد</p>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-indigo-600 mb-2">50,000+</div>
+                    <p class="text-gray-600">جلسة مكتملة</p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // FAQ Toggle
+    document.querySelectorAll('.faq-toggle').forEach(button => {
+        button.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            const icon = this.querySelector('i');
+            
+            content.classList.toggle('hidden');
+            icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+    });
+
+    // Testimonials Slider
+    let currentTestimonial = 0;
+    function nextTestimonial() {
+        const container = document.getElementById('testimonialsContainer');
+        if (container) {
+            currentTestimonial = (currentTestimonial + 1) % 3;
+            container.style.transform = `translateX(-${currentTestimonial * 100}%)`;
+        }
+    }
+    function previousTestimonial() {
+        const container = document.getElementById('testimonialsContainer');
+        if (container) {
+            currentTestimonial = (currentTestimonial - 1 + 3) % 3;
+            container.style.transform = `translateX(-${currentTestimonial * 100}%)`;
+        }
+    }
+</script>
+{% endblock %}

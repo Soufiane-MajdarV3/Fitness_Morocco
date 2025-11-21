@@ -1,0 +1,53 @@
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-12 mt-16">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-xl font-bold mb-4">منصة فيتنس المغرب</h3>
+                <p class="text-gray-400">
+                    منصة متخصصة في ربط المدربين الشخصيين والنوادي الرياضية مع العملاء في المغرب.
+                </p>
+            </div>
+            
+            <!-- Quick Links -->
+            <div>
+                <h4 class="text-lg font-bold mb-4">روابط سريعة</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="{% url 'home' %}" class="hover:text-white">الرئيسية</a></li>
+                    <li><a href="{% url 'trainers' %}" class="hover:text-white">المدربون</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'client_dashboard' %}" class="hover:text-white">لوحة التحكم</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            
+            <!-- Contact -->
+            <div>
+                <h4 class="text-lg font-bold mb-4">اتصل بنا</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><i class="fas fa-phone ml-2"></i>+212 123 456 789</li>
+                    <li><i class="fas fa-envelope ml-2"></i>info@fitnesmorocco.com</li>
+                    <li><i class="fas fa-map-marker-alt ml-2"></i>الدار البيضاء، المغرب</li>
+                </ul>
+            </div>
+            
+            <!-- Social Media -->
+            <div>
+                <h4 class="text-lg font-bold mb-4">تابعنا</h4>
+                <div class="flex space-x-reverse space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+            <p class="text-gray-400">
+                © 2024 منصة فيتنس المغرب. جميع الحقوق محفوظة.
+            </p>
+        </div>
+    </div>
+</footer>

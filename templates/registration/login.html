@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}الدخول - منصة فيتنس المغرب{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center px-4">
+    <div class="bg-white rounded-lg shadow-2xl w-full max-w-md p-8">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <i class="fas fa-dumbbell text-indigo-600 text-3xl mb-2"></i>
+            <h1 class="text-2xl font-bold text-gray-900">منصة فيتنس المغرب</h1>
+            <p class="text-gray-600 mt-2">رحبا بعودتك</p>
+        </div>
+
+        <!-- Form -->
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Display Errors -->
+            {% if form.non_field_errors %}
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <p class="text-red-800 text-sm font-semibold">خطأ في بيانات الدخول</p>
+                    {% for error in form.non_field_errors %}
+                        <p class="text-red-700 text-sm">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Username/Email Field -->
+            <div>
+                <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    اسم المستخدم أو البريد الإلكتروني
+                </label>
+                <input 
+                    type="text" 
+                    name="username" 
+                    id="{{ form.username.id_for_label }}"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    placeholder="أدخل اسم المستخدم أو البريد الإلكتروني"
+                    required
+                >
+                {% if form.username.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Password Field -->
+            <div>
+                <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    كلمة المرور
+                </label>
+                <input 
+                    type="password" 
+                    name="password" 
+                    id="{{ form.password.id_for_label }}"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    placeholder="أدخل كلمة المرور"
+                    required
+                >
+                {% if form.password.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.password.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            <button 
+                type="submit"
+                class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-colors font-semibold"
+            >
+                الدخول
+            </button>
+        </form>
+
+        <!-- Sign Up Link -->
+        <div class="mt-6 text-center">
+            <p class="text-gray-600">ليس لديك حساب؟</p>
+            <a href="{% url 'signup' %}" class="text-indigo-600 font-semibold hover:text-indigo-700">
+                إنشاء حساب جديد
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

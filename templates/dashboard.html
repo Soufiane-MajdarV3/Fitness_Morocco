@@ -1,0 +1,312 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}لوحة التحكم - منصة فيتنس المغرب{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        transition: all 0.3s ease;
+        border-left: 4px solid;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-icon {
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover .stat-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    .booking-item {
+        transition: all 0.3s ease;
+        border-left: 4px solid #e5e7eb;
+    }
+    
+    .booking-item:hover {
+        border-left-color: #4f46e5;
+        box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.1);
+        transform: translateX(4px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Page Header -->
+    <div class="mb-12">
+        <div class="flex items-start justify-between">
+            <div>
+                <h1 class="text-4xl font-bold text-gray-900">لوحة التحكم</h1>
+                <p class="text-gray-600 mt-2 text-lg">
+                    <i class="fas fa-wave-hand ml-2 text-yellow-500"></i>
+                    مرحبا بك <span class="font-semibold text-indigo-600">{{ user.get_full_name }}</span>، إدارة حجوزاتك وتقدمك
+                </p>
+            </div>
+            <div class="text-right">
+                <p class="text-sm text-gray-500">آخر تحديث الآن</p>
+                <p class="text-xs text-gray-400 mt-1">📅 {{ today|date:"d/m/Y" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <!-- Total Bookings -->
+        <div class="stat-card bg-white rounded-2xl shadow-lg p-8 border-indigo-500 border border-gray-100">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-medium">إجمالي الحجوزات</p>
+                    <p class="text-4xl font-bold text-gray-900 mt-3">{{ total_bookings }}</p>
+                </div>
+                <div class="stat-icon w-14 h-14 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-calendar-check text-indigo-600 text-2xl"></i>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-4 pt-4 border-t border-gray-100">
+                📊 جميع جلساتك المسجلة
+            </p>
+        </div>
+
+        <!-- Upcoming Bookings -->
+        <div class="stat-card bg-white rounded-2xl shadow-lg p-8 border-blue-500 border border-gray-100">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-medium">جلسات قادمة</p>
+                    <p class="text-4xl font-bold text-gray-900 mt-3">{{ upcoming_count }}</p>
+                </div>
+                <div class="stat-icon w-14 h-14 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-clock text-blue-600 text-2xl"></i>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-4 pt-4 border-t border-gray-100">
+                ⏰ في انتظار تنفيذ
+            </p>
+        </div>
+
+        <!-- Completed Bookings -->
+        <div class="stat-card bg-white rounded-2xl shadow-lg p-8 border-green-500 border border-gray-100">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-medium">جلسات مكتملة</p>
+                    <p class="text-4xl font-bold text-gray-900 mt-3">{{ completed_count }}</p>
+                </div>
+                <div class="stat-icon w-14 h-14 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-4 pt-4 border-t border-gray-100">
+                ✅ تم الانتهاء منها
+            </p>
+        </div>
+
+        <!-- Total Spent -->
+        <div class="stat-card bg-white rounded-2xl shadow-lg p-8 border-purple-500 border border-gray-100">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-medium">إجمالي الإنفاق</p>
+                    <p class="text-4xl font-bold text-gray-900 mt-3">{{ total_spent }}</p>
+                </div>
+                <div class="stat-icon w-14 h-14 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-money-bill-wave text-purple-600 text-2xl"></i>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-4 pt-4 border-t border-gray-100">
+                💰 درهم مغربي
+            </p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Upcoming Bookings Section -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-calendar-alt text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900">الجلسات القادمة</h3>
+                </div>
+                
+                {% if upcoming_bookings %}
+                    <div class="space-y-4">
+                        {% for booking in upcoming_bookings %}
+                            <div class="booking-item bg-white border border-gray-200 rounded-xl p-6 hover:bg-blue-50">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="flex items-start gap-4 flex-1">
+                                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold">
+                                            <i class="fas fa-dumbbell"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-900 text-lg">{{ booking.trainer.user.get_full_name }}</h4>
+                                            <p class="text-sm text-gray-600 mt-1">
+                                                <i class="fas fa-tag ml-1"></i>
+                                                {{ booking.session_type.name }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1.5 rounded-lg text-xs font-bold">
+                                        ⏱️ قريباً
+                                    </span>
+                                </div>
+                                <div class="flex items-center gap-4 text-sm text-gray-600 mt-4 pt-4 border-t border-gray-200">
+                                    <span class="text-gray-700 font-medium">
+                                        <i class="fas fa-calendar ml-2 text-indigo-600"></i>{{ booking.booking_date|date:"d/m/Y" }}
+                                    </span>
+                                    <span class="text-gray-700 font-medium">
+                                        <i class="fas fa-clock ml-2 text-purple-600"></i>{{ booking.start_time|time:"H:i" }}
+                                    </span>
+                                    <span class="text-gray-700 font-medium">
+                                        <i class="fas fa-hourglass-half ml-2 text-orange-600"></i>{{ booking.duration_minutes }} دقيقة
+                                    </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-12 bg-gray-50 rounded-xl">
+                        <i class="fas fa-inbox text-gray-300 text-5xl mb-3 block"></i>
+                        <p class="text-gray-600 text-lg">لا توجد جلسات قادمة</p>
+                        <p class="text-gray-500 text-sm mt-2">احجز جلسة جديدة الآن!</p>
+                        <a href="{% url 'trainers' %}" class="inline-block mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-search ml-2"></i>ابحث عن مدرب
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Recent Sessions -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-history text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900">آخر الجلسات المكتملة</h3>
+                </div>
+                
+                {% if recent_bookings %}
+                    <div class="space-y-4">
+                        {% for booking in recent_bookings %}
+                            <div class="booking-item bg-white border border-gray-200 rounded-xl p-6 hover:bg-green-50">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="flex items-start gap-4 flex-1">
+                                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-bold">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-900 text-lg">{{ booking.trainer.user.get_full_name }}</h4>
+                                            <p class="text-sm text-gray-600 mt-1">
+                                                <i class="fas fa-tag ml-1"></i>
+                                                {{ booking.session_type.name }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    {% if booking.review %}
+                                        <span class="bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-xs font-bold">
+                                            ✅ مقيمة
+                                        </span>
+                                    {% else %}
+                                        <a href="{% url 'add_review' booking.id %}" class="bg-yellow-100 text-yellow-800 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-yellow-200 transition-colors">
+                                            ⭐ اترك تقييم
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                <div class="flex items-center gap-4 text-sm text-gray-600 mt-4 pt-4 border-t border-gray-200">
+                                    <span class="text-gray-700 font-medium">
+                                        <i class="fas fa-calendar ml-2 text-indigo-600"></i>{{ booking.booking_date|date:"d/m/Y" }}
+                                    </span>
+                                    <span class="text-gray-700 font-medium">
+                                        <i class="fas fa-clock ml-2 text-purple-600"></i>{{ booking.start_time|time:"H:i" }}
+                                    </span>
+                                    <span class="text-gray-700 font-medium">
+                                        <i class="fas fa-coins ml-2 text-yellow-600"></i>{{ booking.total_price }} د.م
+                                    </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-12 bg-gray-50 rounded-xl">
+                        <i class="fas fa-archive text-gray-300 text-5xl mb-3 block"></i>
+                        <p class="text-gray-600 text-lg">لا توجد جلسات مكتملة</p>
+                        <p class="text-gray-500 text-sm mt-2">ستظهر جلساتك هنا بعد الانتهاء منها</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-bolt text-indigo-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">إجراءات سريعة</h3>
+                </div>
+                <div class="space-y-3">
+                    <a href="{% url 'trainers' %}" class="block w-full text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-3 rounded-xl hover:shadow-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 font-semibold">
+                        <i class="fas fa-search ml-2"></i>
+                        ابحث عن مدرب
+                    </a>
+                    <a href="{% url 'booking_list' %}" class="block w-full text-center bg-gray-100 text-gray-900 px-4 py-3 rounded-xl hover:bg-gray-200 transition-colors font-semibold">
+                        <i class="fas fa-calendar ml-2"></i>
+                        جميع الحجوزات
+                    </a>
+                    <a href="{% url 'profile' %}" class="block w-full text-center bg-gray-100 text-gray-900 px-4 py-3 rounded-xl hover:bg-gray-200 transition-colors font-semibold">
+                        <i class="fas fa-user ml-2"></i>
+                        ملفي الشخصي
+                    </a>
+                </div>
+            </div>
+
+            <!-- Profile Card -->
+            <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl shadow-lg p-8 border border-indigo-100">
+                <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+                    <i class="fas fa-id-card text-indigo-600"></i>
+                    ملفك الشخصي
+                </h3>
+                <div class="text-center">
+                    <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        {% if user.profile_image %}
+                            <img src="{{ user.profile_image.url }}" alt="صورتك" class="w-full h-full object-cover rounded-2xl">
+                        {% else %}
+                            <i class="fas fa-user text-white text-3xl"></i>
+                        {% endif %}
+                    </div>
+                    <h4 class="font-bold text-gray-900 text-lg">{{ user.get_full_name }}</h4>
+                    <p class="text-sm text-gray-600 mt-1">{{ user.email }}</p>
+                    <div class="mt-6 p-4 bg-white rounded-lg border border-indigo-200">
+                        <p class="text-xs text-gray-600">👤 عضو منذ</p>
+                        <p class="font-bold text-gray-900 text-lg">{{ user.date_joined|date:"d/m/Y" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Card -->
+            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-2xl p-8">
+                <div class="flex items-start gap-3 mb-4">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                        <i class="fas fa-headset text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-blue-900">هل تحتاج إلى مساعدة؟</h3>
+                        <p class="text-sm text-blue-800 mt-1">فريقنا جاهز للإجابة على أسئلتك في أي وقت</p>
+                    </div>
+                </div>
+                <a href="#" class="inline-block text-blue-600 hover:text-blue-700 font-bold text-sm mt-3 group">
+                    تواصل معنا 
+                    <i class="fas fa-arrow-left ml-1 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
