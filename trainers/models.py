@@ -65,6 +65,10 @@ class Trainer(models.Model):
     total_reviews = models.IntegerField(default=0)
     total_sessions = models.IntegerField(default=0)
     earnings = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    
+    # Subscription and billing (related via TrainerSubscription in payments app)
+    # Access via: trainer.trainer_subscription
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

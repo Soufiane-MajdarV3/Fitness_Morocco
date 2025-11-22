@@ -3,9 +3,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, UpdateView
 from django.urls import reverse_lazy
+from django.contrib import messages
+import logging
 from .forms import UserRegistrationForm, UserLoginForm, UserProfileUpdateForm
 from .models import CustomUser
 from clients.models import ClientProfile
+
+logger = logging.getLogger(__name__)
 
 
 class RegisterView(CreateView):
@@ -16,20 +20,39 @@ class RegisterView(CreateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        from trainers.models import City
-        context['cities'] = City.objects.all()
+        # Handle cities - don't break if City model isn't available
+        try:
+            from trainers.models import City
+            context['cities'] = City.objects.all()
+        except Exception as e:
+            logger.warning(f"Could not load City objects: {e}")
+            context['cities'] = []
         return context
     
     def form_valid(self, form):
-        response = super().form_valid(form)
-        user = form.instance
-        
-        # Create client profile if registering as client
-        if user.user_type == 'client':
-            from clients.models import ClientProfile
-            ClientProfile.objects.create(user=user)
-        
-        return response
+        try:
+            user = form.save(commit=True)
+            
+            # Create client profile if registering as client
+            if user.user_type == 'client':
+                try:
+                    ClientProfile.objects.create(user=user)
+                except Exception as e:
+                    logger.warning(f"Could not create ClientProfile: {e}")
+            
+            # Log successful registration
+            logger.info(f"User {user.username} registered successfully as {user.user_type}")
+            messages.success(self.request, f'تم إنشاء الحساب بنجاح! الرجاء تسجيل الدخول.')
+            
+            return redirect(self.success_url)
+        except Exception as e:
+            logger.error(f"Error during registration: {e}")
+            form.add_error(None, f'حدث خطأ أثناء إنشاء الحساب: {str(e)}')
+            return self.form_invalid(form)
+    
+    def form_invalid(self, form):
+        logger.warning(f"Form submission failed with errors: {form.errors}")
+        return super().form_invalid(form)
 
 
 def login_view(request):

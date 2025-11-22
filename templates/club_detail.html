@@ -1,0 +1,486 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ club.name }} - نادي{% endblock %}
+
+{% block extra_css %}
+<style>
+    .club-hero {
+        position: relative;
+        height: 400px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        overflow: hidden;
+    }
+    
+    .club-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .club-hero-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        font-size: 6rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .club-hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.3);
+    }
+    
+    .club-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        padding: 40px 20px 20px;
+        color: white;
+    }
+    
+    .club-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .club-meta {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .club-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1rem;
+    }
+    
+    .club-meta-item i {
+        font-size: 1.2rem;
+    }
+    
+    .content-section {
+        background: white;
+        padding: 30px;
+        margin-bottom: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #667eea;
+    }
+    
+    .description {
+        color: #666;
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+    
+    .map-container {
+        width: 100%;
+        height: 400px;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 20px 0;
+    }
+    
+    .map-container iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+    
+    .trainers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 25px;
+        margin-top: 20px;
+    }
+    
+    .trainer-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+    }
+    
+    .trainer-card:hover {
+        transform: translateY(-8px);
+    }
+    
+    .trainer-image {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        overflow: hidden;
+    }
+    
+    .trainer-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .trainer-content {
+        padding: 15px;
+    }
+    
+    .trainer-name {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    
+    .trainer-specialties {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+    
+    .specialty-badge {
+        background: #f0f0f0;
+        color: #666;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+    }
+    
+    .trainer-rating {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .stars {
+        color: #ffc107;
+    }
+    
+    .trainer-price {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #667eea;
+        margin-bottom: 10px;
+    }
+    
+    .trainer-cta {
+        width: 100%;
+        padding: 10px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.3s;
+    }
+    
+    .trainer-cta:hover {
+        background: #5568d3;
+    }
+    
+    .contact-section {
+        background: #f5f5f5;
+        padding: 20px;
+        border-radius: 10px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+    
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        background: #667eea;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+    
+    .contact-text h4 {
+        margin: 0 0 5px 0;
+        font-size: 0.95rem;
+        color: #666;
+    }
+    
+    .contact-text p {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .no-trainers {
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+    }
+    
+    .no-trainers i {
+        font-size: 3rem;
+        color: #ddd;
+        margin-bottom: 15px;
+    }
+    
+    .subscription-badge {
+        display: inline-block;
+        background: #e3f2fd;
+        color: #1976d2;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+    
+    .stats-bar {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+    
+    .stat-item {
+        text-align: center;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 5px;
+    }
+    
+    @media (max-width: 768px) {
+        .club-hero {
+            height: 250px;
+        }
+        
+        .club-title {
+            font-size: 1.8rem;
+        }
+        
+        .content-section {
+            padding: 20px;
+        }
+        
+        .trainers-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Hero Section -->
+    <div class="club-hero">
+        {% if club.logo %}
+            <img src="{{ club.logo.url }}" alt="{{ club.name }}">
+        {% else %}
+            <div class="club-hero-placeholder">
+                <i class="fas fa-dumbbell"></i>
+            </div>
+        {% endif %}
+        <div class="club-hero-overlay"></div>
+        
+        <div class="club-info">
+            {% if club.subscription_plan %}
+            <span class="subscription-badge">
+                <i class="fas fa-star"></i> {{ club.subscription_plan.name }}
+            </span>
+            {% endif %}
+            
+            <h1 class="club-title">{{ club.name }}</h1>
+            
+            <div class="club-meta">
+                <div class="club-meta-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ club.city }}</span>
+                </div>
+                <div class="club-meta-item">
+                    <i class="fas fa-users"></i>
+                    <span>{{ total_trainers }} مدربين</span>
+                </div>
+                <div class="club-meta-item">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>{{ club_bookings_count }} حجز</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container" style="padding: 30px 20px; margin: 0 auto; max-width: 1200px;">
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number">{{ total_trainers }}</div>
+                <div class="stat-label">مدربين محترفين</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ club_bookings_count }}</div>
+                <div class="stat-label">حجوزات ناجحة</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ club.created_at|date:"Y" }}</div>
+                <div class="stat-label">سنة التأسيس</div>
+            </div>
+        </div>
+        
+        <!-- About Section -->
+        {% if club.description %}
+        <div class="content-section">
+            <h2 class="section-title">عن النادي</h2>
+            <div class="description">
+                {{ club.description }}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Contact Section -->
+        <div class="content-section">
+            <h2 class="section-title">معلومات التواصل</h2>
+            <div class="contact-section">
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="contact-text">
+                        <h4>الهاتف</h4>
+                        <p>{{ club.phone }}</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-text">
+                        <h4>البريد الإلكتروني</h4>
+                        <p>{{ club.email }}</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-text">
+                        <h4>الموقع</h4>
+                        <p>{{ club.city }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Map Section -->
+        {% if club.address %}
+        <div class="content-section">
+            <h2 class="section-title">الموقع على الخريطة</h2>
+            <p style="color: #666; margin-bottom: 15px;">{{ club.address }}</p>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d{{ club.city|urlencode }}!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0:0x0!2z{{ club.address|urlencode }}!5e0!3m2!1sen!2s!4v1" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Trainers Section -->
+        <div class="content-section">
+            <h2 class="section-title">المدربين المتاحين ({{ total_trainers }})</h2>
+            
+            {% if trainers %}
+            <div class="trainers-grid">
+                {% for trainer in trainers %}
+                <div class="trainer-card">
+                    <div class="trainer-image">
+                        {% if trainer.user.profile_image %}
+                        <img src="{{ trainer.user.profile_image.url }}" alt="{{ trainer.user.get_full_name }}">
+                        {% else %}
+                        <i class="fas fa-user"></i>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="trainer-content">
+                        <h3 class="trainer-name">{{ trainer.user.get_full_name }}</h3>
+                        
+                        {% if trainer.profile.specialties.all %}
+                        <div class="trainer-specialties">
+                            {% for specialty in trainer.profile.specialties.all|slice:":3" %}
+                            <span class="specialty-badge">{{ specialty.name }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="trainer-rating">
+                            <div class="stars">
+                                {% for i in "12345" %}
+                                    <i class="fas fa-star{% if forloop.counter > trainer.avg_rating %}-o{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+                            <span>({{ trainer.review_count }})</span>
+                        </div>
+                        
+                        <div class="trainer-price">
+                            {{ trainer.profile.price_per_hour }} د.م / الساعة
+                        </div>
+                        
+                        <button class="trainer-cta" onclick="location.href='{% url 'trainer_detail' trainer.profile.id %}'">
+                            احجز الآن
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            {% else %}
+            <div class="no-trainers">
+                <i class="fas fa-user-tie"></i>
+                <h3>لا يوجد مدربين متاحين حاليا</h3>
+                <p>تابعنا لاحقا</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -28,6 +28,9 @@ from trainers.views import (
     trainer_my_clients, trainer_earnings, trainer_bookings, update_booking_status
 )
 
+# Billing views
+from core.views_billing import pricing_view, clubs_directory_view, club_detail_view
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     
@@ -68,6 +71,14 @@ urlpatterns = [
     path('trainer/earnings/', trainer_earnings, name='trainer_earnings'),
     path('trainer/bookings/', trainer_bookings, name='trainer_bookings'),
     path('trainer/booking/<int:booking_id>/status/', update_booking_status, name='update_booking_status'),
+    
+    # Pricing and Subscription URLs
+    path('pricing/', pricing_view, name='pricing'),
+    path('clubs/', clubs_directory_view, name='clubs_directory'),
+    path('club/<uuid:club_id>/', club_detail_view, name='club_detail'),
+    
+    # API URLs
+    path('api/billing/', include('payments.urls')),
 ]
 
 # Serve media files in development

@@ -27,6 +27,15 @@ class Booking(models.Model):
     notes = models.TextField(blank=True)
     cancelled_by = models.CharField(max_length=20, choices=[('client', 'عميل'), ('trainer', 'مدرب')], blank=True)
     cancelled_reason = models.TextField(blank=True)
+    
+    # Commission tracking
+    commission_rate = models.DecimalField(max_digits=5, decimal_places=2, default=20)  # Percentage (20 = 20%)
+    commission_amount = models.DecimalField(max_digits=8, decimal_places=2, default=0)  # Platform commission
+    trainer_earnings = models.DecimalField(max_digits=8, decimal_places=2, default=0)  # Trainer gets after commission
+    
+    # Organization link (if trainer works for gym)
+    organization = models.ForeignKey('payments.Organization', on_delete=models.SET_NULL, null=True, blank=True, related_name='bookings')
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

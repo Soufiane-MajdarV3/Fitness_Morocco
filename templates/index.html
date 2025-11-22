@@ -351,27 +351,63 @@
             <h2 class="text-4xl font-bold text-center mb-16">ماذا يقول عملاؤنا؟</h2>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {% for i in "123" %}
-                    <div class="card-hover bg-white rounded-xl p-8 border border-gray-200">
-                        <div class="flex items-center gap-1 mb-4">
-                            {% for j in "12345" %}
-                                <i class="fas fa-star text-yellow-400"></i>
-                            {% endfor %}
+                <!-- Testimonial 1 -->
+                <div class="card-hover bg-white rounded-xl p-8 border border-gray-200">
+                    <div class="flex items-center gap-1 mb-4">
+                        {% for j in "12345" %}<i class="fas fa-star text-yellow-400"></i>{% endfor %}
+                    </div>
+                    <p class="text-gray-700 mb-6 italic leading-relaxed">
+                        "بعد 6 أشهر من التدريب مع أحمد، استطعت خسارة 15 كيلو وبناء عضلات قوية. البرنامج المخصص والمتابعة المستمرة كانت مفتاح نجاحي الحقيقي!"
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                            <i class="fas fa-user text-indigo-600"></i>
                         </div>
-                        <p class="text-gray-700 mb-6 italic leading-relaxed">
-                            "منصة رائعة جداً! وجدت مدرب شخصي محترف جداً ساعدني على تحقيق أهدافي في وقت قياسي. التطبيق سهل الاستخدام والفريق متعاون جداً."
-                        </p>
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                                <i class="fas fa-user text-indigo-600"></i>
-                            </div>
-                            <div>
-                                <p class="font-bold">محمد أحمد</p>
-                                <p class="text-sm text-gray-600">الدار البيضاء</p>
-                            </div>
+                        <div>
+                            <p class="font-bold">فتحية محمود</p>
+                            <p class="text-sm text-gray-600">الدار البيضاء</p>
                         </div>
                     </div>
-                {% endfor %}
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="card-hover bg-white rounded-xl p-8 border border-gray-200">
+                    <div class="flex items-center gap-1 mb-4">
+                        {% for j in "12345" %}<i class="fas fa-star text-yellow-400"></i>{% endfor %}
+                    </div>
+                    <p class="text-gray-700 mb-6 italic leading-relaxed">
+                        "حالة صحتي النفسية تحسنت كثيراً منذ بدأت حضور دروس اليوجا مع فاطمة. الاسترخاء والهدوء الذي أشعر به بعد كل حصة لا يُقدّر بثمن. شكراً لك!"
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
+                            <i class="fas fa-user text-purple-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">سارة علي</p>
+                            <p class="text-sm text-gray-600">الرباط</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="card-hover bg-white rounded-xl p-8 border border-gray-200">
+                    <div class="flex items-center gap-1 mb-4">
+                        {% for j in "1234" %}<i class="fas fa-star text-yellow-400"></i>{% endfor %}
+                        <i class="far fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-700 mb-6 italic leading-relaxed">
+                        "التطبيق سهل جداً وحجز الجلسات أصبح بكبسة زر. تقدمي في اللياقة البدنية كان أسرع من توقعاتي! أنصح به الجميع بشدة!"
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                            <i class="fas fa-user text-indigo-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">عمر محسن</p>
+                            <p class="text-sm text-gray-600">مراكش</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
