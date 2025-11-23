@@ -11,7 +11,10 @@ from django.views.generic import TemplateView
 from core.views import HomeView, TrainerListView, TrainerDetailView, contact_view, client_progress
 
 # Authentication views
-from authentication.views import RegisterView, login_view, logout_view, profile_view, profile_update_view
+from authentication.views import (
+    RegisterView, login_view, logout_view, profile_view, profile_update_view,
+    google_login, google_callback
+)
 
 # Bookings views
 from bookings.views import (
@@ -50,6 +53,8 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('profile/', profile_view, name='profile'),
     path('profile/edit/', profile_update_view, name='profile_edit'),
+    path('auth/google/login/', google_login, name='google_login'),
+    path('auth/google/callback/', google_callback, name='google_callback'),
     
     # Bookings URLs
     path('booking/<int:trainer_id>/', booking_view, name='booking'),
